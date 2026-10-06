@@ -3,9 +3,12 @@
 const puppeteer = require('C:/Users/Xie Yulong/Documents/ChatGPT/知识库/_qs_tmp/node_modules/puppeteer-core');
 const path = require('path');
 
-const PAGE = path.resolve(__dirname, '..', 'index.html');
-const toUrl = (p) => 'file:///' + p.replace(/\\/g, '/').replace(/ /g, '%20')
-  .replace(/[^\x00-\x7F]/g, (c) => encodeURIComponent(c));
+// 可选参数：给一个线上地址就体检线上版本，不给就检查本地 index.html
+const ARG = process.argv[2];
+const PAGE = ARG
+  ? ARG
+  : 'file:///' + path.resolve(__dirname, '..', 'index.html').replace(/\\/g, '/')
+      .replace(/ /g, '%20').replace(/[^\x00-\x7F]/g, (c) => encodeURIComponent(c));
 
 (async () => {
   const b = await puppeteer.launch({
@@ -18,7 +21,7 @@ const toUrl = (p) => 'file:///' + p.replace(/\\/g, '/').replace(/ /g, '%20')
     const errs = [];
     p.on('pageerror', (e) => errs.push(e.message));
     await p.setViewport({ width: w, height: 1000 });
-    await p.goto(toUrl(PAGE), { waitUntil: 'load' });
+    await p.goto(PAGE, { waitUntil: 'load' });
     await p.evaluate(() => document.fonts.ready);
     await p.evaluate(() => Promise.all(Array.from(document.images)
       .map((i) => (i.complete ? null : new Promise((r) => { i.onload = i.onerror = r; })))));
