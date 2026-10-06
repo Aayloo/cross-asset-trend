@@ -3,7 +3,8 @@
 跨资产时序动量（time-series momentum / trend following）的研究实现：数据、信号、组合构建、
 成本、回测、归因、稳健性、容量，全部可复现；结论用机构研究部的 chart pack 形式呈现。
 
-**Chart pack（网页版）**：[`index.html`](index.html) — 用 GitHub Pages 发布后可直接阅读。
+**Chart pack（已发布）**：<https://aayloo.github.io/cross-asset-trend/>
+　·　源码：[`index.html`](index.html)
 
 ![summary](reports/exhibits/ex0-summary.png)
 
