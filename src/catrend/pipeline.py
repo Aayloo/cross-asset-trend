@@ -16,7 +16,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from . import data, evaluation, figures, style
+from . import chartpack, data, evaluation, figures, style
 from .config import Config
 
 
@@ -90,20 +90,7 @@ def run_all(cfg: Config, out_dir: Path, *, force_data: bool = False,
     navs.to_csv(res_dir / "daily_returns.csv", encoding="utf-8-sig")
     main["weights"].to_csv(res_dir / "weights_daily.csv", encoding="utf-8-sig")
 
-    # ---------- 5. 图表 ----------
-    if not skip_figures:
-        style.apply()
-        figures.ex1_design(ex_dir)
-        figures.ex2_nav(ex_dir, {"tsmom": main, "long_only": long_only}, bench)
-        figures.ex3_contribution(ex_dir, panel, main, cfg)
-        figures.ex4_rolling(ex_dir, main, bench)
-        figures.ex5_cost(ex_dir, sweep, be)
-        figures.ex6_heatmap(ex_dir, grid)
-        figures.ex7_stress(ex_dir, regime)
-        figures.ex8_drawdown(ex_dir, main, bench)
-        figures.ex9_capacity(ex_dir, panel, main)
-
-    # ---------- 6. manifest ----------
+    # ---------- 5. manifest ----------
     manifest = {
         "project": cfg.get("project"),
         "version": cfg.get("version"),
@@ -122,6 +109,26 @@ def run_all(cfg: Config, out_dir: Path, *, force_data: bool = False,
     (out_dir / "manifest.json").write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    return {"summary": summary, "sweep": sweep, "grid": grid, "regime": regime,
-            "capacity": cap, "manifest": manifest, "qc": qc,
-            "main": main, "bench": bench}
+    result = {"summary": summary, "sweep": sweep, "grid": grid, "regime": regime,
+              "capacity": cap, "manifest": manifest, "qc": qc,
+              "main": main, "bench": bench}
+
+    # ---------- 6. 图表与 chart pack ----------
+    if not skip_figures:
+        style.apply()
+        figures.ex0_summary(ex_dir, {"tsmom": main, "long_only": long_only}, bench, regime)
+        figures.ex1_design(ex_dir)
+        figures.ex2_nav(ex_dir, {"tsmom": main, "long_only": long_only}, bench)
+        figures.ex3_contribution(ex_dir, panel, main, cfg)
+        figures.ex4_rolling(ex_dir, main, bench)
+        figures.ex5_cost(ex_dir, sweep, be)
+        figures.ex6_heatmap(ex_dir, grid)
+        figures.ex7_stress(ex_dir, regime)
+        figures.ex8_drawdown(ex_dir, main, bench)
+        figures.ex9_capacity(ex_dir, panel, main)
+
+    # chart pack 依赖结果而不是图：即使 --skip-figures 也要重新生成
+    page = chartpack.build(cfg.root, result, cfg)
+    print(f"[pack] chart pack → {page}")
+
+    return result
