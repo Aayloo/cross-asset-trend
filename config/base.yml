@@ -1,0 +1,73 @@
+project: cross-asset-trend
+version: "0.1.0"
+
+# ---------------------------------------------------------------- 数据
+data:
+  source: yahoo
+  start: "2007-01-01"
+  end: null                 # null = 运行当天
+  raw_dir: data/raw
+  cache_dir: data/cache
+  processed_dir: data/processed
+  min_obs: 2000             # 少于这个观测数的资产直接报错，不静默丢弃
+
+# ---------------------------------------------------------------- 资产池
+# asset_class 决定成本档次；adv_window 用于容量估计
+universe:
+  - {ticker: SPY, name_zh: 美股,       name_en: US equity,        asset_class: equity,    group: equity}
+  - {ticker: EFA, name_zh: 发达非美,   name_en: Developed ex-US,  asset_class: equity,    group: equity}
+  - {ticker: EEM, name_zh: 新兴市场,   name_en: Emerging markets, asset_class: equity,    group: equity}
+  - {ticker: IEF, name_zh: 美债 7-10Y, name_en: US 7-10Y,         asset_class: rates,     group: rates}
+  - {ticker: TLT, name_zh: 美债 20Y+,  name_en: US 20Y+,          asset_class: rates,     group: rates}
+  - {ticker: GLD, name_zh: 黄金,       name_en: Gold,             asset_class: gold,      group: commodity}
+  - {ticker: DBC, name_zh: 商品,       name_en: Broad commodity,  asset_class: commodity, group: commodity}
+  - {ticker: UUP, name_zh: 美元,       name_en: US dollar,        asset_class: fx,        group: fx}
+  - {ticker: FXE, name_zh: 欧元,       name_en: Euro,             asset_class: fx,        group: fx}
+  - {ticker: FXY, name_zh: 日元,       name_en: Japanese yen,     asset_class: fx,        group: fx}
+  - {ticker: VNQ, name_zh: 房地产,     name_en: US REITs,         asset_class: reit,      group: reit}
+
+# ---------------------------------------------------------------- 成本
+costs:
+  one_way_bps:              # 单边成交成本，按资产类别
+    equity: 2.0
+    rates: 2.0
+    gold: 3.0
+    commodity: 5.0
+    fx: 3.0
+    reit: 4.0
+  financing_bps_pa: 0.0     # 对总敞口计的年度融资成本（ETF 现金账户默认 0）
+  borrow_bps_pa: 0.0        # 空头借券成本（ETF 无法做空，默认 0）
+  multiplier: 1.0           # 成本压力测试用：1.0 = 基准假设
+
+# ---------------------------------------------------------------- 信号
+signal:
+  lookback_days: 252        # 12 个月时序动量
+  vol_window_days: 60       # 已实现波动窗口
+  vol_floor_ann: 0.04       # 波动下限，避免除以极小值
+
+# ---------------------------------------------------------------- 组合
+portfolio:
+  target_vol_ann: 0.10      # 目标年化波动
+  max_abs_weight: 0.35      # 单资产上限
+  max_gross: 2.00           # 总敞口上限（|w| 之和）
+  rebalance: monthly        # monthly | quarterly | annual
+  vol_target_mode: covariance   # covariance = 用 60 日协方差二次校准；naive = 只按 1/sqrt(N)
+  # ⚠️ 重要披露：ETF 本身不能做空。这里 true 表示「收益由 ETF 总收益代理、
+  # 多空账簿假设通过期货/互换实现」。v2 用连续期货直接检验 roll 与保证金影响。
+  allow_short: true
+
+# ---------------------------------------------------------------- 回测
+backtest:
+  start: "2008-01-01"       # 信号需要 252 日预热，实际起点由数据可用性再决定
+  tradable_lag_days: 1      # 信号在收盘生成，下一交易日生效
+
+# ---------------------------------------------------------------- 稳健性
+robustness:
+  lookbacks: [63, 126, 189, 252, 378, 504]
+  target_vols: [0.05, 0.075, 0.10, 0.15, 0.20]
+  cost_multipliers: [0.0, 1.0, 2.0, 3.0, 5.0, 10.0]
+
+# ---------------------------------------------------------------- 只读 notebook 用的结果目录
+report:
+  exhibits_dir: reports/exhibits
+  results_dir: reports/results

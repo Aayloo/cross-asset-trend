@@ -1,0 +1,27 @@
+[project]
+name = "cross-asset-trend"
+version = "0.1.0"
+description = "Cross-asset time-series momentum: data, signal, portfolio, costs, backtest, attribution"
+requires-python = ">=3.11"
+dependencies = [
+  "numpy>=1.26",
+  "pandas>=2.1",
+  "matplotlib>=3.8",
+  "pyyaml>=6.0",
+  "pyarrow>=15",
+  "yfinance>=0.2.40",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "jupyterlab>=4"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q -p no:cacheprovider"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]

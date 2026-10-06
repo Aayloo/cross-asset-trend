@@ -1,0 +1,35 @@
+{
+  "participation_limit": 0.05,
+  "adv_quantile": 0.2,
+  "capacity_usd_mm": 0.5,
+  "binding_asset": "FXY",
+  "binding_adv_usd_mm": 6.9,
+  "binding_max_turnover": 0.6596,
+  "top5_binding": {
+    "FXY": {
+      "adv_robust_usd_mm": 6.9,
+      "max_turnover_abs": 0.6596,
+      "capacity_usd_mm": 0.5
+    },
+    "FXE": {
+      "adv_robust_usd_mm": 10.3,
+      "max_turnover_abs": 0.5942,
+      "capacity_usd_mm": 0.9
+    },
+    "UUP": {
+      "adv_robust_usd_mm": 18.5,
+      "max_turnover_abs": 0.6073,
+      "capacity_usd_mm": 1.5
+    },
+    "DBC": {
+      "adv_robust_usd_mm": 21.1,
+      "max_turnover_abs": 0.4194,
+      "capacity_usd_mm": 2.5
+    },
+    "IEF": {
+      "adv_robust_usd_mm": 65.2,
+      "max_turnover_abs": 0.6463,
+      "capacity_usd_mm": 5.0
+    }
+  }
+}

@@ -1,0 +1,5 @@
+﻿name,start,end,years,cagr_pct,vol_pct,sharpe,max_dd_pct,worst_12m_pct,sortino,skew,hit_rate_pct,final_nav,turnover_two_way_pa,turnover_one_way_pa,avg_gross_exposure,avg_net_exposure,avg_n_positions,n_rebalances,gross_cagr_pct,gross_sharpe,cost_drag_pct_pa,cost_multiplier
+tsmom,2008-04-02,2026-10-05,18.48,3.49,9.24,0.378,-24.52,-20.72,0.525,-0.32,53.2,1.887,3.65,7.31,1.79,0.41,11.0,222,3.8,0.411,0.29,1.0
+tsmom-long-only,2008-04-02,2026-10-05,18.48,6.15,10.54,0.584,-23.61,-21.05,0.747,-0.73,54.8,3.016,2.78,5.56,1.51,1.51,6.7,222,6.38,0.605,0.22,1.0
+60/40,2007-04-03,2026-10-05,19.48,8.26,11.01,0.75,-32.21,-27.46,0.949,-0.02,55.2,4.691,0.12,0.25,1.0,1.0,2.0,234,,,,
+equal_weight,2007-04-03,2026-10-05,19.48,4.77,8.92,0.534,-27.82,-24.16,0.695,-0.09,54.0,2.476,0.18,0.35,1.0,1.0,11.0,234,,,,

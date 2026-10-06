@@ -1,0 +1,53 @@
+{
+  "project": "cross-asset-trend",
+  "version": "0.1.0",
+  "run_at": "2026-10-06T10:37:53",
+  "config_path": "C:\\Users\\Xie Yulong\\Documents\\ChatGPT\\知识库\\research\\cross-asset-trend\\config\\base.yml",
+  "config_hash": "5fd826c8caa0",
+  "git_hash": null,
+  "python": "3.13.14",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "data_file_hash": "f0f4ef4d7422",
+  "sample": {
+    "start": "2007-03-01",
+    "end": "2026-10-05",
+    "n_days": 4931,
+    "n_assets": 11
+  },
+  "break_even_cost_multiplier": null,
+  "capacity": {
+    "participation_limit": 0.05,
+    "adv_quantile": 0.2,
+    "capacity_usd_mm": 0.5,
+    "binding_asset": "FXY",
+    "binding_adv_usd_mm": 6.9,
+    "binding_max_turnover": 0.6596,
+    "top5_binding": {
+      "FXY": {
+        "adv_robust_usd_mm": 6.9,
+        "max_turnover_abs": 0.6596,
+        "capacity_usd_mm": 0.5
+      },
+      "FXE": {
+        "adv_robust_usd_mm": 10.3,
+        "max_turnover_abs": 0.5942,
+        "capacity_usd_mm": 0.9
+      },
+      "UUP": {
+        "adv_robust_usd_mm": 18.5,
+        "max_turnover_abs": 0.6073,
+        "capacity_usd_mm": 1.5
+      },
+      "DBC": {
+        "adv_robust_usd_mm": 21.1,
+        "max_turnover_abs": 0.4194,
+        "capacity_usd_mm": 2.5
+      },
+      "IEF": {
+        "adv_robust_usd_mm": 65.2,
+        "max_turnover_abs": 0.6463,
+        "capacity_usd_mm": 5.0
+      }
+    }
+  }
+}

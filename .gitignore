@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+data/cache/
+data/raw/
+data/processed/
+*.log
+
+# 图表与结果表要进仓库：别人 clone 下来就能看到结论，不必先联网跑一遍。
+# 原始数据不进仓库（可由 run.py 重新抓取）。

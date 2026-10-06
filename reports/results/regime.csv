@@ -1,0 +1,24 @@
+﻿bucket,kind,unit,strat_pct,bench_pct,spy_pct
+2008,year,pct_pa,6.34,-16.32,-32.69
+2009,year,pct_pa,-4.81,13.2,26.35
+2010,year,pct_pa,0.2,13.5,15.06
+2011,year,pct_pa,4.36,7.85,1.89
+2012,year,pct_pa,6.36,11.29,15.99
+2013,year,pct_pa,18.07,15.62,32.31
+2014,year,pct_pa,6.04,11.87,13.46
+2015,year,pct_pa,8.53,1.71,1.23
+2016,year,pct_pa,-10.79,7.67,12.0
+2017,year,pct_pa,9.27,13.73,21.71
+2018,year,pct_pa,-12.59,-1.98,-4.57
+2019,year,pct_pa,3.54,21.82,31.22
+2020,year,pct_pa,-5.52,16.61,18.33
+2021,year,pct_pa,-0.12,15.05,28.73
+2022,year,pct_pa,13.94,-16.61,-18.18
+2023,year,pct_pa,1.18,16.78,26.18
+2024,year,pct_pa,3.29,14.17,24.89
+2025,year,pct_pa,15.33,13.9,17.72
+2026,year,pct_pa,7.9,6.59,14.51
+SPY worst 10% days,conditional,bps_per_day,-15.4,-122.1,-224.4
+SPY best 10% days,conditional,bps_per_day,3.5,117.6,210.6
+60/40 worst 10% days,conditional,bps_per_day,-12.6,-126.0,-217.7
+60/40 best 10% days,conditional,bps_per_day,4.2,121.7,205.0
