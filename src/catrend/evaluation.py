@@ -5,7 +5,7 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from . import backtest, portfolio
+from . import backtest, portfolio, signals
 from .config import Config
 
 
@@ -212,3 +212,86 @@ def capacity(panel: dict, res: dict, participation: float = 0.05,
         "binding_max_turnover": round(float(dmax[binding]), 4),
         "top5_binding": table.head(5).to_dict(orient="index"),
     }
+
+
+# ------------------------------------------------------- 信号诊断（命中率）
+def hit_rates(panel: dict, lookbacks: list[int], horizon: int = 21) -> list[dict]:
+    """sign(过去 N 日收益) 对未来 horizon 日收益方向的命中率。
+
+    这是「信号本身有没有预测力」的检验，与组合构造无关——
+    如果这一步就不成立，后面所有优化都没有意义。
+    """
+    R = panel["returns"]
+    fwd = R.rolling(horizon).sum().shift(-horizon)
+    rows = []
+    for lb in lookbacks:
+        mom = signals.momentum(R, lb)
+        hit = (np.sign(fwd) == np.sign(mom)).where(mom.notna() & fwd.notna())
+        per_asset = hit.mean()
+        rows.append({
+            "lookback_days": int(lb),
+            "mean_hit": round(float(np.nanmean(hit.values)), 4),
+            "min_hit": round(float(per_asset.min()), 4),
+            "max_hit": round(float(per_asset.max()), 4),
+        })
+    return rows
+
+
+# ------------------------------------------------------- 参数前沿（交互用）
+def frontier(panel: dict, cfg: Config, modes: list[bool], target_vols: list[float]) -> list[dict]:
+    """对 (多空/只做多) × (目标波动率) 各跑一次，留下月度净值供交互图使用。"""
+    out = []
+    for allow_short in modes:
+        for tv in target_vols:
+            r = run(panel, cfg, params={"allow_short": bool(allow_short),
+                                        "target_vol_ann": float(tv)},
+                    label=f"{'LS' if allow_short else 'LO'}-{tv}")
+            net = r["pnl"]["net"].resample("ME").apply(lambda s: (1 + s).prod() - 1)
+            nav = (1 + net.fillna(0)).cumprod()
+            out.append({
+                "mode": "long_short" if allow_short else "long_only",
+                "target_vol": float(tv),
+                "stats": {k: r["stats"][k] for k in
+                          ("cagr_pct", "vol_pct", "sharpe", "max_dd_pct",
+                           "turnover_two_way_pa", "avg_gross_exposure")},
+                "months": [d.strftime("%Y-%m") for d in nav.index],
+                "nav": [round(float(v), 4) for v in nav.values],
+            })
+    return out
+
+
+# ------------------------------------------------------- 1/N 对拍
+def direction_variants(panel: dict, cfg: Config, lookback: int = 252) -> list[dict]:
+    """固定 1/N 等权，只改方向用法。用来回答：择时到底加不加价值。"""
+    returns = panel["returns"]
+    n = len(returns.columns)
+    mom = signals.momentum(returns, lookback)
+    dates = portfolio.rebalance_signal_dates(returns.index, "monthly")
+    pos = {d: i for i, d in enumerate(returns.index)}
+    bps = cost_bps_map(cfg)
+    variants = {
+        "long_short": lambda m: np.sign(m) / n,
+        "long_only": lambda m: (m > 0).astype(float) / n,
+        "reversed": lambda m: -np.sign(m) / n,
+        "always_long": lambda m: pd.Series(1.0 / n, index=m.index),
+    }
+    out = []
+    for name, fn in variants.items():
+        targets = {}
+        for d in dates:
+            m = mom.iloc[pos[d]]
+            if m.isna().any():
+                continue
+            targets[d] = fn(m)
+        W, turnover = backtest.build_weight_path(
+            returns, targets, int(cfg.get("backtest", "tradable_lag_days", default=1)))
+        pnl = backtest.net_returns(returns, W, turnover, bps)
+        live = W.abs().sum(axis=1)
+        start = live[live > 1e-9].index[0]
+        s = backtest.perf_stats(pnl["net"].loc[start:], name=name)
+        g = backtest.perf_stats(pnl["gross"].loc[start:], name=name)
+        out.append({"variant": name,
+                    "gross_cagr_pct": g["cagr_pct"], "gross_sharpe": g["sharpe"],
+                    "net_cagr_pct": s["cagr_pct"], "net_sharpe": s["sharpe"],
+                    "max_dd_pct": s["max_dd_pct"], "vol_pct": s["vol_pct"]})
+    return out

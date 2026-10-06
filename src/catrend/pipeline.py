@@ -68,6 +68,10 @@ def run_all(cfg: Config, out_dir: Path, *, force_data: bool = False,
     grid = evaluation.param_grid(panel, cfg)
     regime = evaluation.regime_table(panel, main["pnl"], bench["60/40"]["pnl"])
     cap = evaluation.capacity(panel, main)
+    diag = {"hit_rates": evaluation.hit_rates(panel, [21, 63, 126, 252, 504], horizon=21),
+            "direction_variants": evaluation.direction_variants(panel, cfg)}
+    front = evaluation.frontier(panel, cfg, modes=[True, False],
+                                target_vols=[0.05, 0.075, 0.10, 0.15, 0.20])
 
     # ---------- 4. 落表 ----------
     summary = pd.DataFrame([
@@ -80,6 +84,10 @@ def run_all(cfg: Config, out_dir: Path, *, force_data: bool = False,
     regime.to_csv(res_dir / "regime.csv", index=False, encoding="utf-8-sig")
     (res_dir / "capacity.json").write_text(
         json.dumps(cap, ensure_ascii=False, indent=2), encoding="utf-8")
+    (res_dir / "diagnostics.json").write_text(
+        json.dumps(diag, ensure_ascii=False, indent=2), encoding="utf-8")
+    (res_dir / "frontier.json").write_text(
+        json.dumps(front, ensure_ascii=False), encoding="utf-8")
 
     navs = pd.DataFrame({
         "tsmom_net": main["pnl"]["net"],

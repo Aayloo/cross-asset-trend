@@ -1,0 +1,72 @@
+{
+  "hit_rates": [
+    {
+      "lookback_days": 21,
+      "mean_hit": 0.512,
+      "min_hit": 0.4855,
+      "max_hit": 0.5583
+    },
+    {
+      "lookback_days": 63,
+      "mean_hit": 0.5328,
+      "min_hit": 0.5159,
+      "max_hit": 0.5846
+    },
+    {
+      "lookback_days": 126,
+      "mean_hit": 0.5308,
+      "min_hit": 0.5041,
+      "max_hit": 0.6023
+    },
+    {
+      "lookback_days": 252,
+      "mean_hit": 0.5289,
+      "min_hit": 0.4741,
+      "max_hit": 0.6341
+    },
+    {
+      "lookback_days": 504,
+      "mean_hit": 0.5307,
+      "min_hit": 0.4533,
+      "max_hit": 0.6515
+    }
+  ],
+  "direction_variants": [
+    {
+      "variant": "long_short",
+      "gross_cagr_pct": 1.31,
+      "gross_sharpe": 0.149,
+      "net_cagr_pct": 1.16,
+      "net_sharpe": 0.132,
+      "max_dd_pct": -25.82,
+      "vol_pct": 8.8
+    },
+    {
+      "variant": "long_only",
+      "gross_cagr_pct": 3.12,
+      "gross_sharpe": 0.561,
+      "net_cagr_pct": 3.05,
+      "net_sharpe": 0.548,
+      "max_dd_pct": -10.46,
+      "vol_pct": 5.57
+    },
+    {
+      "variant": "reversed",
+      "gross_cagr_pct": -1.97,
+      "gross_sharpe": -0.222,
+      "net_cagr_pct": -2.11,
+      "net_sharpe": -0.238,
+      "max_dd_pct": -34.02,
+      "vol_pct": 8.87
+    },
+    {
+      "variant": "always_long",
+      "gross_cagr_pct": 4.45,
+      "gross_sharpe": 0.498,
+      "net_cagr_pct": 4.39,
+      "net_sharpe": 0.492,
+      "max_dd_pct": -27.82,
+      "vol_pct": 8.93
+    }
+  ]
+}
